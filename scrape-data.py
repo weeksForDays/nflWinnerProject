@@ -15,10 +15,22 @@ options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument('--incognito')
 
-driver = webdriver.Chrome('C:\\Users\\Peter\\Desktop\\COS_Courses\\482\\Project\\chromedriver_win32\\chromedriver')
+driver = webdriver.Chrome('/Users/elliottweeks/nflWinnerProject/nflWinnerProject/chromedriver_mac64/chromedriver')
 driver.get('https://www.pro-football-reference.com/years/2022/index.htm')
 
-soup = bs(driver.page_source, 'lxml')
+#soup = bs(driver.page_source, 'lxml')
+
+
+
+    
+
+
+# df=pd.read_html(firstTable)
+
+# df.to_csv('bitch.csv',index=False)
+
+
+
 
 screen_height = driver.execute_script('return window.screen.height;')
 i = 1.5
@@ -37,9 +49,11 @@ while True:
 
 nextPage = driver.find_element(By.XPATH, '//*[@id="playoff_results"]/tbody/tr[13]/td[3]/strong/a')
 
-'/html/body/div[2]/div[5]/div[3]/div[3]/table/tbody/tr[11]/td[3]/strong/a'
-
 # '//*[@id="playoff_results"]/tbody/tr[11]/td[3]/strong/a'
+
+
+
+
 
 if nextPage:
     nextPage.click()
@@ -47,4 +61,19 @@ if nextPage:
     soup = bs(driver.page_source, 'lxml')
 
 
-# all_item_info = soup.find_all('div', class_='item-info')
+
+
+firstTable = soup.find('table', id='team_stats')
+
+bothHeaders=firstTable.find('thead').find_all('tr')
+
+columnHeaders=bothHeaders[1].find_all('th')
+
+
+
+headers=[]
+
+for columnName in columnHeaders:
+    headers.append(columnName.get_text(strip=True))
+
+print(headers)
