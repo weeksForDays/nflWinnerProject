@@ -41,7 +41,7 @@ x=2022
 while (x>2001):
     
     
-    
+    #finding the winning teams page
     teamPage = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[1]/div[2]/p[1]/a')  #Finds winning team element
     
     #This is the if statement that will clicks the next page and makes a soup object of the html
@@ -51,12 +51,14 @@ while (x>2001):
         soup = bs(driver.page_source, 'lxml')
     
     
-
-    table = soup.find('table', id='team_stats')
+    #finds the team stats table
+    teamStats = soup.find('table', id='team_stats')
+    
 
     # extract the data from the table using Pandas
-    df = pd.read_html(str(table),header=0)[0]  
-    csvFileName=str(x)+'.csv'
+    df = pd.read_html(str(teamStats),header=0)[0] 
+
+    csvFileName=str(x)+'_team_stats.csv'
     df.to_csv(csvFileName,header=0,index=False)
 
     driver.back()
