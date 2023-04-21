@@ -24,6 +24,67 @@ def addNullVals():
         df.to_csv(fileName,index=False)
         x=x+1
 
+def createMasterTeamStatsTable():
+
+    totYardsDfMaster=pd.DataFrame()
+    passingDfMaster=pd.DataFrame()
+    rushingDfMaster=pd.DataFrame()
+    penaltiesDfMaster=pd.DataFrame()
+    avgDriveStatsDfMaster=pd.DataFrame()
+
+
+    x=2000
+    while x<=2022:
+        totYardsFileName=str(x)+'_total_yards_turnovers_stats.csv'
+        totYardsDf = pd.read_csv(totYardsFileName,header=0)
+        # add a new index column with the same index value for all rows
+        totYardsDf['index'] = (x-2000)
+
+        # set the index column as the index for df_new
+        totYardsDf = totYardsDf.set_index('index')
+    
+        # concatenate df_new with df_master
+        totYardsDfMaster = pd.concat([totYardsDf, totYardsDfMaster])
+        
+        passingFileName=str(x)+'_passing_stats.csv'
+        passingDf = pd.read_csv(passingFileName,header=0)
+
+        passingDf['index']= (x-2000)
+        passingDf=passingDf.set_index('index')
+        passingDfMaster = pd.concat([passingDf,passingDfMaster])
+
+
+        rushingStatsFileName=str(x)+'_rushing_stats.csv'
+        rushingDf = pd.read_csv(rushingStatsFileName,header=0)
+
+        rushingDf['index']= (x-2000)
+        rushingDf=rushingDf.set_index('index')
+        rushingDfMaster = pd.concat([rushingDf,rushingDfMaster])
+
+        penaltiesStatsFileName=str(x)+'_penalties_stats.csv'
+        penaltiesDf = pd.read_csv(penaltiesStatsFileName,header=0)
+
+        penaltiesDf['index']= (x-2000)
+        penaltiesDf=penaltiesDf.set_index('index')
+        penaltiesDfMaster = pd.concat([penaltiesDf,penaltiesDfMaster])
+
+        avgDriveStatsFileName=str(x)+'_avg_drive_stats.csv'
+        avgDriveStatsDf = pd.read_csv(avgDriveStatsFileName,header=0)
+        
+        avgDriveStatsDf['index']= (x-2000)
+        avgDriveStatsDf=avgDriveStatsDf.set_index('index')
+        avgDriveStatsDfMaster = pd.concat([avgDriveStatsDf,avgDriveStatsDfMaster])
+        x=x+1
+
+    totYardsDfMaster.to_csv("totalYardsMaster.csv",index=True)
+    passingDfMaster.to_csv("passingDfMaster.csv",index=True)
+    rushingDfMaster.to_csv("rushingMaster.csv",index=True)
+    penaltiesDfMaster.to_csv("penaltiesMaster.csv",index=True)
+    avgDriveStatsDfMaster.to_csv("avgDriveMaster.csv",index=True)
+
+
+    
+
 
 def sortTeamStatsData():
     x=2000
@@ -75,7 +136,35 @@ def sortTeamStatsData():
         x=x+1
 
 
+def createMasterTeamConversionsTable():
+
+    teamConversionsMasterDf=pd.DataFrame()
+    
+    x=2000
+    while x<=2022:
+        fileName=str(x)+'_team_conversions.csv'
+        teamConversionsDf = pd.read_csv(fileName,header=0)
+        # add a new index column with the same index value for all rows
+        teamConversionsDf['index'] = (x-2000)
+
+        # set the index column as the index for df_new
+        teamConversionsDf = teamConversionsDf.set_index('index')
+    
+        # concatenate df_new with df_master
+        teamConversionsMasterDf = pd.concat([teamConversionsDf, teamConversionsMasterDf])
+        
+        
+        x=x+1
+
+    teamConversionsMasterDf.to_csv("team_conversions_master.csv",index=True)
+    
+
+createMasterTeamConversionsTable()
+
 
 #addNullVals()
 
-sortTeamStatsData()
+#sortTeamStatsData()
+
+
+#createMasterTeamStatsTable()
