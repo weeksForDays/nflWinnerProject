@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import ElementClickInterceptedException
 
 import time
@@ -15,25 +15,25 @@ import time
 def main():
 
 
-    #This is the setup for the firefox driver, can be changed back to chrome tho
-    geckodriver_path = '/Users/elliottweeks/nflWinnerProject/nflWinnerProject/geckodriver'
-
-    #This is the setup for the firefox driver, the options, and the url that we want to scrape
     url = 'https://www.pro-football-reference.com/years/2022/index.htm'
     response = requests.get(url)
 
     options = Options()
     # options.add_argument('--ignore-certificate-errors')
     # options.add_argument('--incognito')
-    options.add_argument("-install-global-extension,/Users/elliottweeks/nflWinnerProject/uBlock0_1.48.8.firefox.xpi")
-    options.headless = True
+    # options.add_argument("-install-global-extension,/Users/elliottweeks/nflWinnerProject/uBlock0_1.48.8.firefox.xpi")
+    
 
+    # add the Chrome incognito mode alternative
+    options.add_argument("--incognito")
+    options.add_argument("--start-maximized")
 
+    #options.add_argument("--headless")
 
-    # add the Firefox incognito mode alternative
-    options.set_preference("browser.privatebrowsing.autostart", True)
+    # Set the path to the Chrome driver executable
+    chromedriver_path = '/Users/elliottweeks/nflWinnerProject/nflWinnerProject/chromedriver_mac64/chromedriver'
 
-    driver = webdriver.Firefox(options=options, executable_path=geckodriver_path)
+    driver = webdriver.Chrome(options=options, executable_path=chromedriver_path)
     driver.get('https://www.pro-football-reference.com/years/2022/index.htm')
 
 
@@ -44,7 +44,7 @@ def main():
     x=2022
 
 
-    while (x>2019):
+    while (x>1999):
         
         
         #finding the winning teams page
@@ -53,13 +53,23 @@ def main():
         #This is the if statement that will click the next page IF it finds the element and makes a soup object of the html
         if teamPage:
             teamPage.click()
+            time.sleep(3)
             pageSource = driver.page_source
             soup = bs(driver.page_source, 'lxml')
         
         
-        Scrape_Team_Stats(soup,x)
 
-        Scrape_Team_Conversions(soup,x)
+        try:
+            Scrape_Team_Stats(soup,x)
+        except AttributeError:
+            print("No team stats scraped for "+str(x))
+        
+        try:
+            Scrape_Team_Conversions(soup,x)
+        except AttributeError:
+            print("No team conversions scraped for "+str(x))
+
+
 
         #find advanced stats page
         advancedStatsPage=driver.find_element(By.XPATH, '/html/body/div[2]/div[4]/ul/li[4]/a')
@@ -67,12 +77,19 @@ def main():
         #Checks if advanced stats page exists, if it does then it clicks it and makes a soup object of the html
         if advancedStatsPage:
             advancedStatsPage.click()
+            time.sleep(3)
             pageSource=driver.page_source
             advancedSoup=bs(driver.page_source, 'lxml')
         
-        Scrape_Team_Advanced_Rushing(advancedSoup,x)
+        try:
+            Scrape_Team_Advanced_Rushing(advancedSoup,x)
+        except AttributeError:
+            print("No advanced rushing scraped for "+str(x))
 
-        Scrape_Team_Advanced_Receiving(advancedSoup,x)
+        try:
+            Scrape_Team_Advanced_Receiving(advancedSoup,x)
+        except AttributeError:
+            print("No advanced recieving stats scraped for "+str(x))
 
         #Scrape_Team_Advanced_Defence(advancedSoup,x)
 
@@ -95,11 +112,14 @@ def main():
         #we need to have it wait a few second after refresh idk tho
         try: 
             lastYear=driver.find_element(By.XPATH, "//a[@class='button2 prev']")
-            lastYear.click()
+            if lastYear:
+                lastYear.click()
         except ElementClickInterceptedException:
             driver.refresh()
+            time.sleep(3)
             lastYear=driver.find_element(By.XPATH, "//a[@class='button2 prev']")
-            lastYear.click()
+            if lastYear:
+                lastYear.click()
         x=x-1
 
 
@@ -133,7 +153,7 @@ def Scrape_Team_Conversions(soup,yearName):
 
 def Scrape_Team_Advanced_Rushing(soup,yearName):
     #finds the team advanced rushing headers and data in adv rushing table
-    teamAdvRushingHeaders= soup.find('table', id='advanced_rushing').find('thead')
+    teamAdvRushingHeaders = soup.find('table', id='advanced_rushing').find('thead')
     teamAdvRushingData = soup.find('table', id='advanced_rushing').find('tfoot')
 
 
@@ -146,7 +166,7 @@ def Scrape_Team_Advanced_Rushing(soup,yearName):
         for cell in row.find_all('th'):
             row_headers.append(cell.text.strip())
         headers.append(row_headers)
-    print(headers)
+    #print(headers)
     data = []
     for row in teamAdvRushingData.find_all('tr'):
         row_data = []
@@ -179,7 +199,7 @@ def Scrape_Team_Advanced_Receiving(soup,yearName):
             row_headers.append(text)
         headers.append(row_headers)
 
-    print(headers)
+    #print(headers)
 
     data = []
     for row in teamAdvReceivingData.find_all('tr'):
