@@ -217,7 +217,7 @@ for i in range(0, 4):
     conn.commit()
 
 
-
+# Fill TotalYdsTO table
 for i in range(2002, 2023):
     with open(str(i)+'.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
@@ -234,3 +234,146 @@ for i in range(2002, 2023):
             conn.commit()
 
             pid +=1
+
+# Fill Passing table
+for i in range(2002, 2023):
+    with open(str(i)+'.csv', 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        pid = 0
+        next(reader)
+
+        for row in reader:
+            for x in range(0, len(row)):
+                 if row[x] == '':
+                      row[x] = -1
+                      
+            cur.execute('INSERT INTO Passing VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
+            (i, pid, int(row[8]), int(row[9]), int(row[10]), int(row[11]), int(row[12]), float(row[13]), int(row[14]) ))
+            conn.commit()
+
+            pid +=1
+
+# Fill Rushing table
+for i in range(2002, 2023):
+    with open(str(i)+'.csv', 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        pid = 0
+        next(reader)
+
+        for row in reader:
+            for x in range(0, len(row)):
+                 if row[x] == '':
+                      row[x] = -1
+                      
+            cur.execute('INSERT INTO Rushing VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (i, pid, int(row[15]), int(row[16]), int(row[17]), float(row[18]), int(row[19])))
+            conn.commit()
+
+            pid +=1
+
+# Fill Penalties table
+for i in range(2002, 2023):
+    with open(str(i)+'.csv', 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        pid = 0
+        next(reader)
+
+        for row in reader:
+            for x in range(0, len(row)):
+                 if row[x] == '':
+                      row[x] = -1
+                      
+            cur.execute('INSERT INTO Penalties VALUES (%s, %s, %s, %s, %s)',
+            (i, pid, int(row[20]), int(row[21]), int(row[22])))
+            conn.commit()
+
+            pid +=1
+
+# Fill AverageDrive table
+for i in range(2002, 2023):
+    with open(str(i)+'.csv', 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        pid = 0
+        next(reader)
+
+        for row in reader:
+            for x in range(0, len(row)):
+                 if row[x] == '':
+                      row[x] = -1
+                      
+            cur.execute('INSERT INTO AverageDrive VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (i, pid, row[26], row[27], float(row[28]), float(row[29]), float(row[30])))
+            conn.commit()
+
+            pid +=1
+
+# Fill Misc table
+for i in range(2002, 2023):
+    with open(str(i)+'.csv', 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        pid = 0
+        next(reader)
+
+        for row in reader:
+            for x in range(0, len(row)):
+                 if row[x] == '':
+                      row[x] = -1
+                      
+            cur.execute('INSERT INTO Misc VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (i, pid, float(row[6]), int(row[7]), int(row[23]), float(row[24]), float(row[25])))
+            conn.commit()
+
+            pid +=1
+
+# Queries
+
+# Finds the average points scored by super bowl winning teams
+'''
+SELECT AVG(tyto.pf)
+FROM TotalYdsTO AS tyto
+WHERE tyto.pid = 2;
+
+SELECT player.name, tyto.year, tyto.pf
+FROM TotalYdsTO AS tyto
+INNER JOIN Player ON Player.id = tyto.pid
+INNER JOIN Winner ON Winner.year = tyto.year
+WHERE pid IN (2,3);
+
+
+'''
+
+# Ranking teams based on the number of superbowl rings they have since 2002
+'''
+SELECT Team.name, COUNT(Team.name) AS count
+FROM Winner
+INNER JOIN Team ON Team.id = Winner.tid
+GROUP BY Team.name
+ORDER BY COUNT(Team.name) desc;
+'''
+
+# Average rank of Team Defense in turnovers
+'''
+SELECT AVG(tyto.turnOver)
+FROM TotalYdsTO AS tyto
+WHERE tyto.pid = 3;
+'''
+
+# Average rank of Team Offense in turnovers
+'''
+SELECT AVG(tyto.turnOver)
+FROM TotalYdsTO AS tyto
+WHERE tyto.pid = 2;
+'''
+
+# Average number of plays per drive with every team's offense and the average league rank
+'''
+SELECT AVG(adTeam.plays) AS TeamStats, AVG(adLeague.plays) AS LgOffense
+FROM AverageDrive AS adTeam, AverageDrive as adLeague
+WHERE adTeam.pid = 0;
+'''
+
+'''
+SELECT AVG(ad.pts)
+FROM AverageDrive AS adOffense, AverageDrive AS adDefense
+GROUP BY ;
+'''
