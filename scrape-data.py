@@ -34,19 +34,19 @@ def main():
     chromedriver_path = '/Users/elliottweeks/nflWinnerProject/nflWinnerProject/chromedriver_mac64/chromedriver'
 
     driver = webdriver.Chrome(options=options, executable_path=chromedriver_path)
-    driver.get('https://www.pro-football-reference.com/years/2022/index.htm')
+    driver.get('https://www.pro-football-reference.com/years/1998/index.htm')
 
 
 
 
     #This is the while loop that our code sits in. It is counting down by year, and we are scraping ~something~ from every winning team
 
-    x=2022
+    x=1999
 
 
-    while (x>1999):
+    while (x>1966):
         
-        
+
         #finding the winning teams page
         teamPage = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[1]/div[2]/p[1]/a')  #Finds winning team element
         
@@ -64,37 +64,37 @@ def main():
         except AttributeError:
             print("No team stats scraped for "+str(x))
         
-        try:
-            Scrape_Team_Conversions(soup,x)
-        except AttributeError:
-            print("No team conversions scraped for "+str(x))
+        # try:
+        #     Scrape_Team_Conversions(soup,x)
+        # except AttributeError:
+        #     print("No team conversions scraped for "+str(x))
 
 
 
         #find advanced stats page
-        advancedStatsPage=driver.find_element(By.XPATH, '/html/body/div[2]/div[4]/ul/li[4]/a')
+        # advancedStatsPage=driver.find_element(By.XPATH, '/html/body/div[2]/div[4]/ul/li[4]/a')
 
-        #Checks if advanced stats page exists, if it does then it clicks it and makes a soup object of the html
-        if advancedStatsPage:
-            advancedStatsPage.click()
-            time.sleep(3)
-            pageSource=driver.page_source
-            advancedSoup=bs(driver.page_source, 'lxml')
+        # #Checks if advanced stats page exists, if it does then it clicks it and makes a soup object of the html
+        # if advancedStatsPage:
+        #     advancedStatsPage.click()
+        #     time.sleep(3)
+        #     pageSource=driver.page_source
+        #     advancedSoup=bs(driver.page_source, 'lxml')
         
-        try:
-            Scrape_Team_Advanced_Rushing(advancedSoup,x)
-        except AttributeError:
-            print("No advanced rushing scraped for "+str(x))
+        # try:
+        #     Scrape_Team_Advanced_Rushing(advancedSoup,x)
+        # except AttributeError:
+        #     print("No advanced rushing scraped for "+str(x))
 
-        try:
-            Scrape_Team_Advanced_Receiving(advancedSoup,x)
-        except AttributeError:
-            print("No advanced recieving stats scraped for "+str(x))
+        # try:
+        #     Scrape_Team_Advanced_Receiving(advancedSoup,x)
+        # except AttributeError:
+        #     print("No advanced recieving stats scraped for "+str(x))
 
         #Scrape_Team_Advanced_Defence(advancedSoup,x)
 
         #this naviagtes back to the teams regular stats page (non advanced)
-        driver.back()
+        #driver.back()
         
         #this navigates back to the season page 
         driver.back()
@@ -136,7 +136,7 @@ def Scrape_Team_Stats(soup,yearName):
     df = pd.read_html(str(teamStats),header=0)[0] 
 
     #creates a csv file with the name of the year and then _team_stats
-    csvFileName=str(yearName)+'_team_stats.csv'
+    csvFileName=str(yearName)+'.csv'
     df.to_csv(csvFileName,header=0,index=False)
 
 def Scrape_Team_Conversions(soup,yearName):
