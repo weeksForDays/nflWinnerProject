@@ -336,8 +336,31 @@ WHERE tyto.pid = 2;
 SELECT player.name, tyto.year, tyto.pf
 FROM TotalYdsTO AS tyto
 INNER JOIN Player ON Player.id = tyto.pid
-INNER JOIN Winner ON Winner.year = tyto.year
 WHERE pid IN (2,3);
+
+SELECT player.name, ad.year, winTeam.name, ad.plays
+FROM AverageDrive as ad
+INNER JOIN Player ON Player.id = ad.pid
+INNER JOIN (
+    SELECT team.name, winner.year 
+    FROM winner 
+    INNER JOIN team ON team.id = winner.tid
+) AS winTeam ON winTeam.year = ad.year
+WHERE pid IN (0,1);
+
+SELECT Player.name, tyto.year, winTeam.name, tyto.pf AS points_scored_or_allowed_total
+FROM TotalYdsTO AS tyto
+INNER JOIN Player ON Player.id = tyto.pid
+INNER JOIN (
+    SELECT team.name, winner.year 
+    FROM winner 
+    INNER JOIN team ON team.id = winner.tid
+) AS winTeam ON winTeam.year = tyto.year
+WHERE tyto.pid IN (2,3);
+
+SELECT misc.scorePercent
+FROM misc
+WHERE misc.pid = 0;
 
 
 '''
