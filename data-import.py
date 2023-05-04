@@ -60,6 +60,13 @@ cur.execute("""
 
 conn.commit()
 
+'''
+pf: Total Points scored by team
+yds: Total yards scored by team
+ply: Offensive plays - Includes pass attempts, rush attempts, and sacks
+yp: Yards per offensive play
+turnOver: Team turnovers lost
+'''
 cur.execute("""
     CREATE TABLE TotalYdsTO (
         year integer,
@@ -81,6 +88,15 @@ cur.execute("""
 
 conn.commit()
 
+'''
+cmp: Passes completed
+att: Passes attempted
+yds: Yards gained by passing
+td: Passing touchdowns
+int: Interceptions thrown
+nya: Net yards gained per pass attempt
+firstdown: 1st downs by passing
+'''
 cur.execute("""
     CREATE TABLE Passing (
         year integer,
@@ -104,6 +120,13 @@ cur.execute("""
 
 conn.commit()
 
+'''
+att: Rushing attempts
+yds: Rushing yards gained
+td: Rushing touchdowns
+ya: Rushing yards per attempt
+firstdown: First downs by rushing
+'''
 cur.execute("""
     CREATE TABLE Rushing (
         year integer,
@@ -125,6 +148,11 @@ cur.execute("""
 
 conn.commit()
 
+'''
+pen: Penalties committed by team and accepted
+yds: Penalties in yards committed by teams
+firstdownpy: 1st down by penalty
+'''
 cur.execute("""
     CREATE TABLE Penalties (
         year integer,
@@ -144,6 +172,13 @@ cur.execute("""
 
 conn.commit()
 
+'''
+start: Average starting field position
+time: Average time per drive
+plays: Average # of plays per drive
+yds: Net yards per drive
+pts: Average points per drive
+'''
 cur.execute("""
     CREATE TABLE AverageDrive (
         year integer,
@@ -165,6 +200,13 @@ cur.execute("""
 
 conn.commit()
 
+'''
+fl: Fumbles lost by player
+firstdown: Total first downs
+numOfDrives: Number of drives
+scorePercent: % of drives ending in an offensive score
+toPercent: % of drives ending in an offensive turnover
+'''
 cur.execute("""
     CREATE TABLE Misc (
         year integer,
@@ -198,10 +240,10 @@ with open('nfl_teams.csv', 'r') as csv_file:
 
         tid += 1
 
-winners = [29, 18, 18, 24, 13, 20, 24, 19, 11, 20, 2, 27, 18, 9, 18, 23, 18, 15, 29, 28, 15]
+winners = [8, 16, 16, 24, 24, 22, 8, 24, 24, 22, 26, 31, 22, 26, 5, 20, 31, 26, 26, 20, 31, 8, 8, 26, 8, 11, 9, 9, 28, 2, 18, 29, 18, 18, 24, 13, 20, 24, 19, 11, 20, 2, 27, 18, 9, 18, 23, 18, 15, 29, 28, 15]
 
 index = 0
-for year in range (2002, 2023):
+for year in range (1971, 2023):
         cur.execute('INSERT INTO Winner VALUES (%s, %s)',
         (year, winners[index]))
         conn.commit()
@@ -218,7 +260,7 @@ for i in range(0, 4):
 
 
 # Fill TotalYdsTO table
-for i in range(2002, 2023):
+for i in range(1971, 2023):
     with open(str(i)+'.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
         pid = 0
@@ -236,7 +278,7 @@ for i in range(2002, 2023):
             pid +=1
 
 # Fill Passing table
-for i in range(2002, 2023):
+for i in range(1971, 2023):
     with open(str(i)+'.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
         pid = 0
@@ -254,7 +296,7 @@ for i in range(2002, 2023):
             pid +=1
 
 # Fill Rushing table
-for i in range(2002, 2023):
+for i in range(1971, 2023):
     with open(str(i)+'.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
         pid = 0
@@ -272,7 +314,7 @@ for i in range(2002, 2023):
             pid +=1
 
 # Fill Penalties table
-for i in range(2002, 2023):
+for i in range(1971, 2023):
     with open(str(i)+'.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
         pid = 0
@@ -290,7 +332,7 @@ for i in range(2002, 2023):
             pid +=1
 
 # Fill AverageDrive table
-for i in range(2002, 2023):
+for i in range(2000, 2023):
     with open(str(i)+'.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
         pid = 0
@@ -308,7 +350,7 @@ for i in range(2002, 2023):
             pid +=1
 
 # Fill Misc table
-for i in range(2002, 2023):
+for i in range(2000, 2023):
     with open(str(i)+'.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
         pid = 0
