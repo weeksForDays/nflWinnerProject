@@ -369,65 +369,20 @@ for i in range(2000, 2023):
 
 # Queries
 
-# Finds the average points scored by super bowl winning teams
+# Finds the score percent of winning teams
 '''
-SELECT AVG(tyto.pf)
-FROM TotalYdsTO AS tyto
-WHERE tyto.pid = 2;
-
-SELECT player.name, tyto.year, tyto.pf
-FROM TotalYdsTO AS tyto
-INNER JOIN Player ON Player.id = tyto.pid
-WHERE pid IN (2,3);
-
-SELECT player.name, ad.year, winTeam.name, ad.plays
-FROM AverageDrive as ad
-INNER JOIN Player ON Player.id = ad.pid
-INNER JOIN (
-    SELECT team.name, winner.year 
-    FROM winner 
-    INNER JOIN team ON team.id = winner.tid
-) AS winTeam ON winTeam.year = ad.year
-WHERE pid IN (0,1);
-
-SELECT Player.name, tyto.year, winTeam.name, tyto.pf AS points_scored_or_allowed_total
-FROM TotalYdsTO AS tyto
-INNER JOIN Player ON Player.id = tyto.pid
-INNER JOIN (
-    SELECT team.name, winner.year 
-    FROM winner 
-    INNER JOIN team ON team.id = winner.tid
-) AS winTeam ON winTeam.year = tyto.year
-WHERE tyto.pid IN (2,3);
-
 SELECT misc.scorePercent
 FROM misc
 WHERE misc.pid = 0;
-
-
 '''
 
-# Ranking teams based on the number of superbowl rings they have since 2002
+# Ranking teams based on the number of superbowl rings they have since 1971
 '''
 SELECT Team.name, COUNT(Team.name) AS count
 FROM Winner
 INNER JOIN Team ON Team.id = Winner.tid
 GROUP BY Team.name
 ORDER BY COUNT(Team.name) desc;
-'''
-
-# Average rank of Team Defense in turnovers
-'''
-SELECT AVG(tyto.turnOver)
-FROM TotalYdsTO AS tyto
-WHERE tyto.pid = 3;
-'''
-
-# Average rank of Team Offense in turnovers
-'''
-SELECT AVG(tyto.turnOver)
-FROM TotalYdsTO AS tyto
-WHERE tyto.pid = 2;
 '''
 
 # Average number of plays per drive with every team's offense and the average league rank
